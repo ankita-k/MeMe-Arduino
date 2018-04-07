@@ -58,11 +58,16 @@ void loop()
         if (MySignals.getBloodPressure() == 1)
         {
           MySignals.disableMuxUART();
-          Serial.println(MySignals.bloodPressureData.diastolic);
-          Serial.println("A");
-          Serial.println(MySignals.bloodPressureData.systolic);
-          delay(1000);
-          resetFunc();
+          if (MySignals.bloodPressureData.diastolic && MySignals.bloodPressureData.systolic) {
+            Serial.println(MySignals.bloodPressureData.diastolic);
+            Serial.println("A");
+            Serial.println(MySignals.bloodPressureData.systolic);
+            delay(1000);
+            resetFunc();
+          } else if (!MySignals.bloodPressureData.diastolic || !MySignals.bloodPressureData.systolic) {
+            delay(1000);
+            resetFunc();
+          }
           MySignals.enableMuxUART();
         } else if (MySignals.getBloodPressure() != 1) {
           delay(1000);
