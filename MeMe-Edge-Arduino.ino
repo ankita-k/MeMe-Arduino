@@ -10,6 +10,7 @@ void setup()
 {
   Serial.begin(115200);
   MySignals.begin();
+  MySignals.initSensorUART();
 }
 
 void loop()
@@ -28,7 +29,6 @@ void loop()
   /**for measuring glucose
   */
   if (signal == 2) {
-    MySignals.initSensorUART();
     MySignals.enableSensorUART(GLUCOMETER);
     delay(1000);
     MySignals.getGlucose();
@@ -50,9 +50,8 @@ void loop()
   /**for measuring blood presure
   */
   if (signal == 3) {
-    MySignals.initSensorUART();
     MySignals.enableSensorUART(BLOODPRESSURE);
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 6; i++) {
       if (MySignals.getStatusBP())
       {
         delay(1000);
@@ -65,7 +64,13 @@ void loop()
           delay(1000);
           resetFunc();
           MySignals.enableMuxUART();
+        } else if (MySignals.getBloodPressure() != 1) {
+          delay(1000);
+          resetFunc();
         }
+      } else if (!MySignals.getStatusBP()) {
+        delay(1000);
+        resetFunc();
       }
       delay(1000);
     }
