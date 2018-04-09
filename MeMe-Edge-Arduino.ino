@@ -10,7 +10,6 @@ void setup()
 {
   Serial.begin(115200);
   MySignals.begin();
-  MySignals.initSensorUART();
 }
 
 void loop()
@@ -29,6 +28,7 @@ void loop()
   /**for measuring glucose
   */
   if (signal == 2) {
+    MySignals.initSensorUART();
     MySignals.enableSensorUART(GLUCOMETER);
     delay(1000);
     MySignals.getGlucose();
@@ -50,6 +50,7 @@ void loop()
   /**for measuring blood presure
   */
   if (signal == 3) {
+    MySignals.initSensorUART();
     MySignals.enableSensorUART(BLOODPRESSURE);
     for (int i = 0; i < 6; i++) {
       if (MySignals.getStatusBP())
@@ -97,16 +98,9 @@ void loop()
   }
   /**for measuring gsr
   */
-  if (signal == 5) {
-    float conductance = MySignals.getGSR(CONDUCTANCE);
+  if (signal == 9) {
     float resistance = MySignals.getGSR(RESISTANCE);
-    float conductanceVol = MySignals.getGSR(VOLTAGE);
-
-    Serial.print(conductance, 2);
-    Serial.print("A");
     Serial.print(resistance, 2);
-    Serial.print("A");
-    Serial.print(conductanceVol, 4);
   }
   /**for measuring spirometer
   */
@@ -142,5 +136,3 @@ void loop()
     }
   }
 }
-
-
