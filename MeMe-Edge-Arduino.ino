@@ -21,7 +21,7 @@ void loop()
   /**for measuring temperature
   */
   if (signal == 6) {
-    float temperature = MySignals.getCalibratedTemperature(100, 10, -3.1, TEMPERATURE);
+    float temperature = MySignals.getCalibratedTemperature(100, 10, -3.4, TEMPERATURE);
     float temp = (((temperature) * 9) / 5) + 32;
     Serial.println(temp);
   }
