@@ -10,7 +10,7 @@ void(* resetFunc) (void) = 0;
 
 // Write here the MAC address of BLE device to find
 char MAC_GLUCO[14] = "187A93090C89";
-boolean controlloop=false;
+boolean controlloop = false;
 uint8_t available_gluco = 0;
 uint8_t connected_gluco = 0;
 uint8_t connection_handle_gluco = 0;
@@ -41,6 +41,9 @@ void loop()
   */
   while (!Serial.available());
   signal = Serial.read();
+
+
+
   /**for measuring temperature
   */
   if (signal == 6) {
@@ -69,8 +72,8 @@ void loop()
     //      }
     //    }
     //    MySignals.enableMuxUART();
-    
-    controlloop=true;
+
+    controlloop = true;
     MySignals.initSensorUART();
     MySignals.enableSensorUART(BLE);
 
@@ -121,8 +124,8 @@ void loop()
       };
     }
 
-    while (available_gluco != 1&& controlloop == true  ) {
-      
+    while (available_gluco != 1 && controlloop == true  ) {
+
       available_gluco = MySignals_BLE.scanDevice(MAC_GLUCO, 1000, TX_POWER_MAX);
 
       MySignals.disableMuxUART();
@@ -197,21 +200,21 @@ void loop()
               }
               MySignals_BLE.disconnect(MySignals_BLE.connection_handle);
               connected_gluco = 0;
-               available_gluco=0;
-               controlloop=false;
+              available_gluco = 0;
+              controlloop = false;
             }
           }
           while ((connected_gluco == 1) && ((millis() - previous) < 40000)); //Timeout 40 seconds
           //Serial.println("while loop exit");
           connected_gluco = 0;
-          available_gluco=0;
-          controlloop=false;
+          available_gluco = 0;
+          controlloop = false;
         }
         else
         {
           connected_gluco = 0;
-          available_gluco=0;
-          controlloop=false;
+          available_gluco = 0;
+          controlloop = false;
           MySignals.println("Not Connected ");
         }
 
@@ -269,20 +272,44 @@ void loop()
   /**for measuring spo2
   */
   if (signal == 4) {
+    //    MySignals.initSensorUART();
+    //    MySignals.enableSensorUART(PULSIOXIMETER_MICRO);
+    //    statusPulsioximeter = MySignals.getPulsioximeterMicro();
+    //    Serial.print(statusPulsioximeter);
+    //    if (statusPulsioximeter == 1)
+    //    {
+    //      Serial.print("A");
+    //      Serial.print(MySignals.pulsioximeterData.BPM);
+    //      Serial.print("A");
+    //      Serial.print(MySignals.pulsioximeterData.O2);
+    //    }
     MySignals.initSensorUART();
     MySignals.enableSensorUART(PULSIOXIMETER_MICRO);
-    statusPulsioximeter = MySignals.getPulsioximeterMicro();
-    Serial.print(statusPulsioximeter);
-    if (statusPulsioximeter == 1)
-    {
-      Serial.print("A");
-      Serial.print(MySignals.pulsioximeterData.BPM);
-      Serial.print("A");
-      Serial.print(MySignals.pulsioximeterData.O2);
+    //MySignals.enableSensorUART(PULSIOXIMETER);
+    for (int i = 0; i <= 20; i++) {
+      delay(10);
+      uint8_t getPulsioximeterMicro_state = MySignals.getPulsioximeterMicro();
+
+      if (getPulsioximeterMicro_state == 1)
+      {
+        String spo2data = "A" + String(MySignals.pulsioximeterData.BPM) + "A" + String(MySignals.pulsioximeterData.O2) + "A" + String(i);
+        Serial.println(spo2data);
+
+      }
+
+      delay(500);
     }
+    MySignals.disableMuxUART();
+
+
+
+
   }
+
   /**for measuring gsr
   */
+
+
   if (signal == 9) {
     float resistance = MySignals.getGSR(RESISTANCE);
     Serial.print(resistance, 2);
